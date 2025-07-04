@@ -1,0 +1,17 @@
+body {
+  font-family: 'Arial', sans-serif;
+  padding: 20px;
+  background-color: #fff8f0;
+}
+#chat {
+  border: 1px solid #ccc;
+  padding: 10px;
+  height: 300px;
+  overflow-y: auto;
+  background: #fff;
+}
+#userInput {
+  width: 60%;
+  padding: 8px;
+  font-size: 16px;
+}
