@@ -1,20 +1,27 @@
 import { GoogleGenerativeAI } from "https://esm.run/@google/generative-ai";
 
-// 🔑 あなたのAPIキー（制限を必ずかけてください）
-const API_KEY = AIzaSyD72lc20slLwn3w7xlQG-Mt7qzenoXU1Fo;
+// あなたの APIキーをここに記入（漏洩前提でクォータ制限して使ってください）
+const API_KEY = "AIzaSyD72lc20slLwn3w7xlQG-Mt7qzenoXU1Fo";
 
-// 初期化
 const genAI = new GoogleGenerativeAI(API_KEY);
 const model = genAI.getGenerativeModel({ model: "gemini-pro" });
 
-let history = [
-  {
-    role: "user",
-    parts: [
-      { text: "あなたは料理アキネーターです。ユーザーに『はい』か『いいえ』で答えられる質問をして、最終的に1つの料理を当ててレシピを出してください。20回以内にお願いします。" }
-    ]
-  }
-];
+let chat;
+let history = [];
+
+async function initChat() {
+  // 初期プロンプトを作成
+  const systemPrompt = `あなたは料理アキネーターです。
+ユーザーに「はい」か「いいえ」で答えられる質問を出して、料理を1つに絞り込み、最終的にそのレシピを提示してください。
+出す質問は1回に1つ、なるべく分かりやすくしてください。`;
+
+  // チャット開始
+  chat = await model.startChat({ history: [] });
+
+  const result = await chat.sendMessage(systemPrompt);
+  const response = result.response.text();
+  appendMessage("🤖 AI: " + response);
+}
 
 async function sendMessage() {
   const input = document.getElementById("userInput").value.trim();
@@ -23,18 +30,16 @@ async function sendMessage() {
   appendMessage("👤 あなた: " + input);
   document.getElementById("userInput").value = "";
 
-  history.push({ role: "user", parts: [{ text: input }] });
-
-  const chat = await model.startChat({ history });
   const result = await chat.sendMessage(input);
   const response = result.response.text();
-
-  history.push({ role: "model", parts: [{ text: response }] });
   appendMessage("🤖 AI: " + response);
 }
 
 function appendMessage(text) {
-  const chat = document.getElementById("chat");
-  chat.innerHTML += `<p>${text}</p>`;
-  chat.scrollTop = chat.scrollHeight;
+  const chatDiv = document.getElementById("chat");
+  chatDiv.innerHTML += `<p>${text}</p>`;
+  chatDiv.scrollTop = chatDiv.scrollHeight;
 }
+
+// ページ読み込み時に初期化
+window.onload = initChat;
