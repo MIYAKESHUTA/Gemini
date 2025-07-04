@@ -1,7 +1,7 @@
 import { GoogleGenerativeAI } from "https://esm.run/@google/generative-ai";
 
 // あなたの APIキーをここに記入（漏洩前提でクォータ制限して使ってください）
-const API_KEY = "AIzaSyD72lc20slLwn3w7xlQG-Mt7qzenoXU1Fo";
+const API_KEY = AIzaSyD72lc20slLwn3w7xlQG-Mt7qzenoXU1Fo;
 
 const genAI = new GoogleGenerativeAI(API_KEY);
 const model = genAI.getGenerativeModel({ model: "gemini-pro" });
